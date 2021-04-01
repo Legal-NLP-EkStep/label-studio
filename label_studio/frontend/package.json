@@ -119,7 +119,9 @@
           "<rootDir>/test/integration/**/*.test.ts",
           "<rootDir>/test/integration/**/*.test.tsx"
         ],
-        "setupFilesAfterEnv": ["expect-puppeteer"]
+        "setupFilesAfterEnv": [
+          "expect-puppeteer"
+        ]
       },
       {
         "displayName": "unit",
