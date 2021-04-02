@@ -2,9 +2,7 @@ name: deploy:docs
 
 on:
   push:
-    branches:
-      - master
-      - ci/deploy-docs
+    branches: [master, 'ci/**']
 
 jobs:
   deploy_docs:
