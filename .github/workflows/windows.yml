@@ -3,7 +3,6 @@ name: pytest:win
 on:
   push:
     branches: ['*', '*/*', '!ci/**', '!docs/**', master]
-  pull_request:
 
 jobs:
 
