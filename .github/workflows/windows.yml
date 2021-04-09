@@ -3,6 +3,8 @@ name: pytest:win
 on:
   push:
     branches: ['*', '*/*', '!ci/**', '!docs/**', master]
+  paths:
+    - 'label_studio/**'
 
 jobs:
 
