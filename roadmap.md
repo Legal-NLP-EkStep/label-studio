@@ -26,6 +26,8 @@ Though the roadmap reflects most of the current data annotation community needs,
 The easiest way to contribute to Label Studio is by creating a [feature request](https://github.com/heartexlabs/label-studio/issues/new?assignees=makseq&labels=&template=feature_request.md&title=), or review the [existing ones](https://github.com/heartexlabs/label-studio/issues) 
 and leave your comment or vote. 
 
+When you create a GitHub issue, you can assign labels to it with the data type or annotation scenario you're thinking of. If you're not sure what labels to add to your request, leave it blank and we'll label it as part of processing issues.
+
 GitHub issues are processed in the following steps:
 
 1. Issue is assigned to the [Label Studio Roadmap](https://github.com/orgs/heartexlabs/projects/1) project. This means we're on it and things are going to happen.
