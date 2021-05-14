@@ -1,42 +1,58 @@
 ---
-title: Machine Learning Unit Testing with Label Studio
+title: Unit Test Machine Learning Models with Label Studio
 type: blog
-order: 96
+order: 94
 meta_title: Machine Learning Unit Testing with Label Studio
 meta_description: Machine Learning Unit Testing with Label Studio 
 ---
 
+Write no-code unit tests for your machine learning models with Label Studio, ensuring accuracy and reducing the likelihood of business case risk. 
 
-## Overview
+This example uses the [detectron2](https://ai.facebook.com/blog/-detectron2-a-pytorch-based-modular-object-detection-library-/) object detection model based on PyTorch and implements a testing flow as a GitHub Action for CI integration, or as a python script to run using your own build and test tooling.
 
-Label Studio tool lets you write no-code unit tests for your ML models.
+## Why to unit test machine learning models
 
-A long explanation why it is important besides running classical one-score ML evaluation scenario, which actually boils down to:
+It can be difficult to test machine learning models, as pointed out by [Jeremy Jordan](https://twitter.com/jeremyjordan)'s post on [Testing Machine Learning](https://www.jeremyjordan.me/testing-ml/) and [Angie Jone](https://twitter.com/techgirl1908)'s work on [Test Automation for Machine Learning](https://angiejones.tech/test-automation-for-machine-learning/). 
+
+Most testing frameworks for machine learning evaluate the _performance_ of the model and neglect to identify possible bugs in the logic that the model learned during the definition or training process. This means you might risk deploying a model with critical logic failures. 
 
 
-#### Identify critical errors
-When reviewing a new machine learning model, we'll inspect metrics and plots which summarize model performance over a validation dataset. We're able to compare performance between multiple models and make relative judgements, but we're not immediately able to characterize specific model behaviors. For example, figuring out where the model is failing usually requires additional investigative work; one common practice here is to look through a list of the top most egregious model errors on the validation dataset and manually categorize these failure modes.
+## How to test machine learning models
 
-#### Set business/product requirements
-Product manager can manually set qualified metrics needed to be achieved before model considered as successful. But it is complicated to specify them in terms of abstract accuracies/recalls numbers, but easy to draw them as specific examples instead.
+There are many ways to test machine learning models, but for unit testing, you want to start by identifying critical errors and the product requirements that the model needs to fulfill. 
+
+### Identify critical errors
+
+When you evaluate a new machine learning model, inspect the metrics and plots that summarize model performance with a validation dataset. This evaluation lets you compare performance between multiple models and make relative judgments, but isn't enough information to characterize specific model behaviors. 
+
+For example, if you want to identify scenarios where the model consistently fails, you must do additional investigation. Usually, that investigation starts with a list of the most common egregious model errors with the validation dataset and manually categorizing those failures.
+
+
+### Identify product requirements
+
+A product manager or business analyst can manually define the qualified metrics that need to be achieved before a model can be considered successful and production-ready. It's difficult to specify these metrics in terms of accuracy or recall for a model, and is much easier to specify them as tangible use case examples. 
 
 ## How it works
-<img src="/images/ML-unit-test-scheme.png" alt="Decorative graphic." class="gif-border" />
+
+In this example, unit test your model predictions by automatically comparing model predictions against a validation dataset of ground truth annotations that you define. 
+
+<img src="/images/ml-test-blog/ML-unit-test-scheme.png" alt="Diagram showing Label Studio and Tensorflow combining with GitHub Actions to produce validated test results." class="gif-border" />
+
+To start unit testing your machine learning models with Label Studio, do the following:
+
+1. Define ground truth annotations with Label Studio.
+2. Get ML model predictions for a dataset. 
+3. Trigger GitHub Action to evaluate the model predictions against ground truth annotations.
 
 
-1. Create Ground Truth annotations with Label Studio
-
-2. Get ML model predictions
-
-3. Trigger CI step to evaluate model predictions on Ground Truth annotations
-
-## Create Ground truth annotations
+## Create ground truth annotations
 
 Upload test images, annotate them then export in raw JSON format `tasks.json`
 
 ## Get ML model predictions
 
 Assume you can get raw output tensors from your model predictions. The crucial step here is to convert these tensor into Label Studio predictions.
+
 You can do it manually by following [Label Studio guide]() or applying converter utility:
 
 ```python
