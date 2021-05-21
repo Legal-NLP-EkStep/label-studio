@@ -112,8 +112,8 @@ Add the following step to your [Github Action workflow]()
   - name: Run Label Studio ML Unit tests
     uses: heartexlabs/label-studio-ml-test@master
     with:
-      test-data: test_tasks.json
-      metric: mAP
+      test_data: test_tasks.json
+      m: mAP
       threshold: 0.9
 ```
 
@@ -138,7 +138,7 @@ jobs:
       - name: Run Label Studio ML Unit tests
         uses: heartexlabs/label-studio-ml-test@master
         with:
-          test-data: test_tasks.json
+          test_data: test_tasks.json
 ```
 
 ## Run ML unit tests manually
@@ -154,5 +154,5 @@ pip install label-studio-ml-test
 Then copy prepared `test_tasks.json` in into repo and run:
 
 ```bash
-label-studio-ml-test --test-data test_tasks.json
+label-studio-ml-test --test_data test_tasks.json
 ```
