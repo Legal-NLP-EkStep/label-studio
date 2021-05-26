@@ -26,6 +26,36 @@
       "description": "Password for default user",
       "value": "",
       "required": false
-    }
+    },
+    "DJANGO_DB": {
+      "description": "DJANGO_DB",
+      "value": "default",
+      "required": false
+    },
+    "POSTGRE_NAME": {
+      "description": "POSTGRE_NAME",
+      "value": "postgres",
+      "required": false
+    },
+    "POSTGRE_USER": {
+      "description": "POSTGRE_USER",
+      "value": "postgres",
+      "required": false
+    },
+    "POSTGRE_PASSWORD": {
+      "description": "POSTGRE_PASSWORD",
+      "value": "default",
+      "required": false
+    },
+    "POSTGRE_PORT": {
+      "description": "POSTGRE_PORT",
+      "value": "5432",
+      "required": false
+    },
+    "POSTGRE_HOST": {
+      "description": "POSTGRE_HOST",
+      "value": "",
+      "required": false
+    },
   }
 }
