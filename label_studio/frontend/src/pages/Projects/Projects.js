@@ -71,7 +71,7 @@ ProjectsPage.routes = ({config, store}) => [
     },
     pages: {
       DataManagerPage,
-      SettingsPage,
+      //SettingsPage,
     },
   },
 ];
