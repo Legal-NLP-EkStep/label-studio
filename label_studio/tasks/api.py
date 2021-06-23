@@ -165,11 +165,21 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
                     "to_name": "text", "type": "labels"}
             return data
 
-        def de_duplicate(list1):
-            list2 = []
-            for i in list1:
-                if i not in list2:
-                    list2.append(i)
+        def de_duplicate(list1, key=False):
+            if key:
+                check = []
+                list2 = []
+                for i in added:
+                    key = i['value']['text'] + '@' + i['value']['labels'][0]
+                    key = key.strip()
+                    if key not in check:
+                        check.append(key)
+                        list2.append(i)
+            else:
+                list2 = []
+                for i in list1:
+                    if i not in list2:
+                        list2.append(i)
             return list2
 
         def fetch_diff(list1, list2):
@@ -183,7 +193,7 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
         last_update = copy.deepcopy(obj.result)
         text = copy.deepcopy(obj.task.data['text'])
         draft = copy.deepcopy(request.data['result'])
-        deleted = []#fetch_diff(last_update, draft)
+        deleted = []  # fetch_diff(last_update, draft)
         added = fetch_diff(draft, last_update)
         new_draft = []
         for deleted_annotation in deleted:
@@ -193,15 +203,19 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
                          deleted_annotation['value']['labels'][0]]).strip() == '@'.join(
                     [i['value']['text'], i['value']['labels'][0]]).strip():
                     new_draft.append(i)
-        # import pdb;pdb.set_trace()
         if not new_draft and not deleted:
             new_draft = draft
-        for annotation in tqdm(added): # ToDo Remove duplicate from added
+        new_added = de_duplicate(added, key=True)
+        change = fetch_diff(added, new_added)
+        for i in change:
+            new_draft.remove(i)
+        added=new_added
+        for annotation in tqdm(added):
             annotated_text = annotation['value']['text']
-            label = annotation['value']['labels'][0] # ToDo Add inclusion list
+            label = annotation['value']['labels'][0]  # ToDo Add inclusion list
             original_start = annotation['value']['start']
             original_end = annotation['value']['end']
-            pattern = re.compile(r'\b'+re.escape(annotated_text)+r'\b')
+            pattern = re.compile(r'\b' + re.escape(annotated_text) + r'\b')
             for found in pattern.finditer(text):
                 start = found.span()[0]
                 end = found.span()[1]
