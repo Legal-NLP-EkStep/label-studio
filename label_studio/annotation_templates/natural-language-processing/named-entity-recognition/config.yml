@@ -5,14 +5,31 @@ order: 3
 image: /static/templates/named-entity-recognition.png
 details: <h1>Extract named entities from text</h1>
 config: '
-<View>
-  <Labels name="label" toName="text">
-    <Label value="PER" background="red"/>
-    <Label value="ORG" background="darkorange"/>
-    <Label value="LOC" background="orange"/>
-    <Label value="MISC" background="green"/>
-  </Labels>
-
-  <Text name="text" value="$ner"/>
+<View style="display: flex; justify-content: space-around; max-height: 900px; overflow-y: scroll;">
+  <View style="overflow-y: scroll; width: 70%; min-width: 200px;">
+    <Header value="Judgement Text"/>
+    <Labels name="label" toName="text">
+      <Label value="COURT" background="#bbabf2" hotkey="c"/>
+      <Label value="AUTHORITY" background="#e8cae5" hotkey="u"/>
+      <Label value="POLICE_STATION" background="#b1ecf7" hotkey="p"/>
+      <Label value="COMPANY" background="#ccfae8" hotkey="y"/>
+      <Label value="OTHER_ORG" background="#b0f6a2" hotkey="o"/>
+      <Label value="STATUTE" background="#faea99" hotkey="s"/>
+      <Label value="PROVISION" background="yellow" hotkey="n"/>
+      <Label value="PRECEDENT" background="#fad6d6" hotkey="t"/>
+      <Label value="LC_CASE" background="#fbb1cf" hotkey="l"/>
+      <Label value="Appellant_Name" background="#f570ea" hotkey="shift+a"/>
+      <Label value="Respondent_Name" background="violet" hotkey="shift+r"/>
+      <Label value="Judge_Name" background="#fdd8a5" hotkey="shift+j"/>
+      <Label value="Lawyer_Name" background="#f9d380" hotkey="shift+l"/>
+      <Label value="Witness_Name" background="violet" hotkey="shift+w"/>
+      <Label value="Investigating_Officer" background="#f0df70" hotkey="shift+i"/>
+      <Label value="Other_Name" background="violet" hotkey="shift+o"/>
+    </Labels>
+  </View>
+  <View style=" padding: .5em; margin: 1em 0; background: #f1f1f1; position: sticky; top: 0; border-radius: 3px; overflow-y: scroll;">
+    <Header value="Judgement Text"/>
+    <Text name="text" value="$text"/>
+  </View>
 </View>
 '
