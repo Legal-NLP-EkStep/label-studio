@@ -209,13 +209,13 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
         change = fetch_diff(added, new_added)
         for i in change:
             new_draft.remove(i)
-        added=new_added
+        added = new_added
         for annotation in tqdm(added):
             annotated_text = annotation['value']['text']
             label = annotation['value']['labels'][0]  # ToDo Add inclusion list
             original_start = annotation['value']['start']
             original_end = annotation['value']['end']
-            pattern = re.compile(r'\b' + re.escape(annotated_text) + r'\b')
+            pattern = re.compile(re.escape(annotated_text))
             for found in pattern.finditer(text):
                 start = found.span()[0]
                 end = found.span()[1]
