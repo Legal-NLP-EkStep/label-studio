@@ -198,10 +198,10 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
             new_draft = draft
         for annotation in tqdm(added): # ToDo Remove duplicate from added
             annotated_text = annotation['value']['text']
-            label = annotation['value']['labels'][0]
+            label = annotation['value']['labels'][0] # ToDo Add inclusion list
             original_start = annotation['value']['start']
             original_end = annotation['value']['end']
-            pattern = re.compile(re.escape(annotated_text))
+            pattern = re.compile(r'\b'+re.escape(annotated_text)+r'\b')
             for found in pattern.finditer(text):
                 start = found.span()[0]
                 end = found.span()[1]
