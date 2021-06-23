@@ -84,7 +84,7 @@ class TaskAPI(generics.RetrieveUpdateDestroyAPIView):
         # POST, PATCH, PUT
         else:
             return TaskSimpleSerializer
-    
+
     def retrieve(self, request, *args, **kwargs):
         task = self.get_object()
 
@@ -99,10 +99,10 @@ class TaskAPI(generics.RetrieveUpdateDestroyAPIView):
         proxy = bool_from_request(request.GET, 'proxy', True)
         result['data'] = task.resolve_uri(result['data'], proxy=proxy)
         return Response(result)
-    
+
     @swagger_auto_schema(tags=['Tasks'], manual_parameters=[
-            openapi.Parameter(name='proxy', type=openapi.TYPE_BOOLEAN, in_=openapi.IN_QUERY,
-                              description='Use the proxy parameter inline for credential access to task data')
+        openapi.Parameter(name='proxy', type=openapi.TYPE_BOOLEAN, in_=openapi.IN_QUERY,
+                          description='Use the proxy parameter inline for credential access to task data')
     ])
     def get(self, request, *args, **kwargs):
         return super(TaskAPI, self).get(request, *args, **kwargs)
@@ -165,26 +165,38 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
                     "to_name": "text", "type": "labels"}
             return data
 
+        def de_duplicate(list1):
+            list2 = []
+            for i in list1:
+                if i not in list2:
+                    list2.append(i)
+            return list2
+
+        def fetch_diff(list1, list2):
+            list3 = []
+            for i in list1:
+                if not i in list2:
+                    list3.append(i)
+            return list3
+
         obj = get_object_with_check_and_log(request, Annotation, pk=annotation_id)
         last_update = copy.deepcopy(obj.result)
         text = copy.deepcopy(obj.task.data['text'])
         draft = copy.deepcopy(request.data['result'])
-        deleted = []
-        added = []
-        for i in draft:
-            if not i in last_update:
-                added.append(i)
-        for i in last_update:
-            if not i in draft:
-                deleted.append(i)
+        deleted = []#fetch_diff(last_update, draft)
+        added = fetch_diff(draft, last_update)
         new_draft = []
         for deleted_annotation in deleted:
             for i in draft:
-                if not deleted_annotation['value']['text'] == i['value']['text']:
+                if not '@'.join(
+                        [deleted_annotation['value']['text'],
+                         deleted_annotation['value']['labels'][0]]).strip() == '@'.join(
+                    [i['value']['text'], i['value']['labels'][0]]).strip():
                     new_draft.append(i)
-        if not new_draft:
+        # import pdb;pdb.set_trace()
+        if not new_draft and not deleted:
             new_draft = draft
-        for annotation in tqdm(added):
+        for annotation in tqdm(added): # ToDo Remove duplicate from added
             annotated_text = annotation['value']['text']
             label = annotation['value']['labels'][0]
             original_start = annotation['value']['start']
@@ -195,10 +207,7 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
                 end = found.span()[1]
                 if start != original_start and end != original_end:
                     new_draft.append(struct(start, end, label, annotated_text))
-        request.data['result'] = []
-        for i in new_draft:
-            if i not in request.data['result']:
-                request.data['result'].append(i)
+        request.data['result'] = de_duplicate(new_draft)
         return request
 
     def update(self, request, *args, **kwargs):
@@ -226,7 +235,7 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
     def delete(self, request, *args, **kwargs):
         return super(AnnotationAPI, self).delete(request, *args, **kwargs)
 
-        
+
 class AnnotationsListAPI(RequestDebugLogMixin, generics.ListCreateAPIView):
     """
     get:
@@ -310,7 +319,6 @@ class AnnotationsListAPI(RequestDebugLogMixin, generics.ListCreateAPIView):
 
 
 class AnnotationDraftListAPI(RequestDebugLogMixin, generics.ListCreateAPIView):
-
     parser_classes = (JSONParser, MultiPartParser, FormParser)
     serializer_class = AnnotationDraftSerializer
     permission_required = ViewClassPermission(
@@ -337,7 +345,6 @@ class AnnotationDraftListAPI(RequestDebugLogMixin, generics.ListCreateAPIView):
 
 
 class AnnotationDraftAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView):
-
     parser_classes = (JSONParser, MultiPartParser, FormParser)
     serializer_class = AnnotationDraftSerializer
     queryset = AnnotationDraft.objects.all()
