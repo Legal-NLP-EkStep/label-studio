@@ -157,6 +157,10 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
         import uuid
         import copy
         from tqdm import tqdm
+        inclusion_list = ['COURT', 'AUTHORITY', 'POLICE_STATION', 'COMPANY', 'OTHER_ORG', 'STATUTE', 'PROVISION',
+                          'PRECEDENT', 'LC_CASE', 'Appellant_Name', 'Respondent_Name', 'Judge_Name', 'Lawyer_Name',
+                          'Witness_Name', 'Investigating_Officer', 'Other_Name']
+
         def struct(start, end, label, text):
             uid = uuid.uuid4()
             id = uid.hex
@@ -215,12 +219,13 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
             label = annotation['value']['labels'][0]  # ToDo Add inclusion list
             original_start = annotation['value']['start']
             original_end = annotation['value']['end']
-            pattern = re.compile(r'\b'+re.escape(annotated_text)+'(?=\W)')
-            for found in pattern.finditer(text):
-                start = found.span()[0]
-                end = found.span()[1]
-                if start != original_start and end != original_end:
-                    new_draft.append(struct(start, end, label, annotated_text))
+            pattern = re.compile(r'\b' + re.escape(annotated_text) + '(?=\W)')
+            if label in inclusion_list:
+                for found in pattern.finditer(text):
+                    start = found.span()[0]
+                    end = found.span()[1]
+                    if start != original_start and end != original_end:
+                        new_draft.append(struct(start, end, label, annotated_text))
         request.data['result'] = de_duplicate(new_draft)
         return request
 
