@@ -151,11 +151,61 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
     def perform_destroy(self, annotation):
         annotation.delete()
 
+    @staticmethod
+    def find_and_annotate_duplicates(request, Annotation, annotation_id):
+        import re
+        import uuid
+        import copy
+        from tqdm import tqdm
+        def struct(start, end, label, text):
+            uid = uuid.uuid4()
+            id = uid.hex
+            data = {"value": {"start": start, "end": end, "text": text, "labels": [label]}, "id": id,
+                    "from_name": "label",
+                    "to_name": "text", "type": "labels"}
+            return data
+
+        obj = get_object_with_check_and_log(request, Annotation, pk=annotation_id)
+        last_update = copy.deepcopy(obj.result)
+        text = copy.deepcopy(obj.task.data['text'])
+        draft = copy.deepcopy(request.data['result'])
+        deleted = []
+        added = []
+        for i in draft:
+            if not i in last_update:
+                added.append(i)
+        for i in last_update:
+            if not i in draft:
+                deleted.append(i)
+        new_draft = []
+        for deleted_annotation in deleted:
+            for i in draft:
+                if not deleted_annotation['value']['text'] == i['value']['text']:
+                    new_draft.append(i)
+        if not new_draft:
+            new_draft = draft
+        for annotation in tqdm(added):
+            annotated_text = annotation['value']['text']
+            label = annotation['value']['labels'][0]
+            original_start = annotation['value']['start']
+            original_end = annotation['value']['end']
+            pattern = re.compile(re.escape(annotated_text))
+            for found in pattern.finditer(text):
+                start = found.span()[0]
+                end = found.span()[1]
+                if start != original_start and end != original_end:
+                    new_draft.append(struct(start, end, label, annotated_text))
+        request.data['result'] = []
+        for i in new_draft:
+            if i not in request.data['result']:
+                request.data['result'].append(i)
+        return request
+
     def update(self, request, *args, **kwargs):
         # save user history with annotator_id, time & annotation result
         annotation_id = self.kwargs['pk']
+        request = self.find_and_annotate_duplicates(request, Annotation, annotation_id)
         annotation = get_object_with_check_and_log(request, Annotation, pk=annotation_id)
-
         annotation.task.save()  # refresh task metrics
 
         return super(AnnotationAPI, self).update(request, *args, **kwargs)
