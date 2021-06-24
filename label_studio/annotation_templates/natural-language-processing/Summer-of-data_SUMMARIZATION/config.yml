@@ -1,0 +1,34 @@
+title: Named Entity Recognition
+type: community
+group: Natural Language Processing
+order: 3
+#image: /static/templates/Summer-of-data_NER.png
+details: <h1>Extract Rhetorical-roles/Hallucinations from text</h1>
+config: '
+<View style="display: flex; justify-content: space-around; max-height: 900px; overflow-y: scroll;">
+  <View style="overflow-y: scroll; width: 70%; min-width: 200px;">
+    <Header value="Judgement Text"/>
+    <Labels name="label" toName="text">
+      <Label value="FAC" background="#ffae00" hotkey="f"/>
+      <Label value="RLC" background="#ff85c2" hotkey="l"/>
+      <Label value="ISSUE" background="#c8ff85" hotkey="i"/>
+      <Label value="ARG" background="#e5a4b1" hotkey="g"/>
+      <Label value="ANALYSIS" background="#a4e4e5" hotkey="n"/>
+      <Label value="STA" background="#f9a201" hotkey="s"/>
+      <Label value="PRE" background="#b6bfed" hotkey="p"/>
+      <Label value="RATIO" background="green" hotkey="r"/>
+      <Label value="RPC" background="#f8fc03" hotkey="c"/>
+    </Labels>
+    <Header value="Predicted Summary"/>
+    <Labels name="label1" toName="summary">
+      <Label value="HALLUCINATION" background="red"/>
+    </Labels>
+  </View>
+  <View style=" padding: .5em; margin: 1em 0; background: #f1f1f1; position: sticky; top: 0; border-radius: 3px; overflow-y: scroll;">
+    <Header value="Judgement Text"/>
+    <Text name="text" value="$text"/>
+    <Header value="Predicted Summary"/>
+    <Text name="summary" value="$predicted_summary"/>
+  </View>
+</View>
+'
