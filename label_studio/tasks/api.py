@@ -170,15 +170,43 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
                     "to_name": "text", "type": "labels"}
             return data
 
+        def de_duplicate_on_enity_label(old_annotations):
+            complete_annotations = {}
+            final_annotations = []
+            for old_annotation in old_annotations:
+                if old_annotation['value']['labels'][0] not in complete_annotations.keys():
+                    complete_annotations[old_annotation['value']['labels'][0]] = []
+
+                complete_annotations[old_annotation['value']['labels'][0]].append(old_annotation)
+
+            for ann in complete_annotations.keys():
+                annotations = complete_annotations[ann]
+                annotations_sorted = sorted(annotations, key=lambda i: (i['value']['start'], -i['value']['end']))
+                to_compare = annotations_sorted[0]
+                annotations_sorted = annotations_sorted[1:]
+
+                final_annotations.append(to_compare)
+                i = 0
+                while i < len(annotations_sorted):
+                    if annotations_sorted[i]['value']['end'] > to_compare['value']['end']:
+                        to_compare = annotations_sorted[i]
+                        final_annotations.append(to_compare)
+
+                    i += 1
+            return final_annotations
+
         def de_duplicate(list1, key=False):
+            dummy_val = 0
             if key:
-                check = []
+                check = {}
                 list2 = []
                 for i in list1:
                     key = i['value']['text'] + '@' + i['value']['labels'][0]
                     key = key.strip()
-                    if key not in check:
-                        check.append(key)
+                    try:
+                        val = check[key]
+                    except:
+                        check[key] = dummy_val
                         list2.append(i)
             else:
                 list2 = []
@@ -188,14 +216,17 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
             return list2
 
         def de_duplicate_on_span_and_type(list1):
-            check = []
+            dummy_val = 0
+            check = {}
             list2 = []
             for i in list1:
                 key = '@'.join(
                     [str(i['value']['start']), str(i['value']['end']), i['value']['text'], i['value']['labels'][0]])
                 key = key.strip()
-                if key not in check:
-                    check.append(key)
+                try:
+                    val = check[key]
+                except:
+                    check[key] = dummy_val
                     list2.append(i)
             return list2
 
@@ -218,7 +249,7 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
                 if not '@'.join(
                         [deleted_annotation['value']['text'],
                          deleted_annotation['value']['labels'][0]]).strip() == '@'.join(
-                    [i['value']['text'], i['value']['labels'][0]]).strip():
+                        [i['value']['text'], i['value']['labels'][0]]).strip():
                     new_draft.append(i)
         if not new_draft and not deleted:
             new_draft = draft
@@ -239,7 +270,7 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
                     end = found.span()[1]
                     if start != original_start and end != original_end:
                         new_draft.append(struct(start, end, label, annotated_text))
-        request.data['result'] = de_duplicate_on_span_and_type(de_duplicate(new_draft))
+        request.data['result'] = de_duplicate_on_enity_label(de_duplicate_on_span_and_type(de_duplicate(new_draft)))
         return request
 
     def update(self, request, *args, **kwargs):
