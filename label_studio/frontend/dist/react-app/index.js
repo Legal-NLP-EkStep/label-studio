@@ -2842,7 +2842,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const SLACK_INVITE_URL = "https://join.slack.com/t/label-studio/shared_invite/zt-qy37y73p-CCfEaEZvDylyQf4oatK40A";
+const SLACK_INVITE_URL = "http://slack.labelstud.io.s3-website-us-east-1.amazonaws.com?source=product-error-msg";
 const ErrorWrapper = ({
   title,
   message,
@@ -5018,7 +5018,7 @@ const Menubar = ({
               target: "_blank"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsx)(_Menu_Menu__WEBPACK_IMPORTED_MODULE_10__.Menu.Item, {
               label: "Slack Community",
-              href: "https://join.slack.com/t/label-studio/shared_invite/zt-qy37y73p-CCfEaEZvDylyQf4oatK40A",
+              href: "http://slack.labelstud.io.s3-website-us-east-1.amazonaws.com?source=product-menu",
               icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsx)(_assets_icons__WEBPACK_IMPORTED_MODULE_2__.LsSlack, {}),
               target: "_blank"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsx)(_VersionNotifier_VersionNotifier__WEBPACK_IMPORTED_MODULE_12__.VersionNotifier, {
@@ -8596,8 +8596,8 @@ DataManagerPage.context = ({
   } = (0,_providers_ProjectProvider__WEBPACK_IMPORTED_MODULE_5__.useProject)();
   const [mode, setMode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)((_dmRef$mode = dmRef === null || dmRef === void 0 ? void 0 : dmRef.mode) !== null && _dmRef$mode !== void 0 ? _dmRef$mode : "explorer");
   const links = {
-    '/settings': 'Settings',
-    '/data/import': "Import",
+    //'/settings': 'Settings',
+    //'/data/import': "Import",
     '/data/export': 'Export'
   };
 
@@ -9036,7 +9036,7 @@ const FormatInfo = ({
       name: "feedback",
       children: ["Can't find an export format?", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("br", {}), "Please let us know in ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("a", {
         className: "no-go",
-        href: "https://join.slack.com/t/label-studio/shared_invite/zt-qy37y73p-CCfEaEZvDylyQf4oatK40A",
+        href: "http://slack.labelstud.io.s3-website-us-east-1.amazonaws.com?source=product-export",
         children: "Slack"
       }), " or submit an issue to the ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("a", {
         className: "no-go",
@@ -9242,12 +9242,15 @@ const InvitationModal = ({
         width: '100%'
       },
       readOnly: true
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_components_Description_Description__WEBPACK_IMPORTED_MODULE_3__.Description, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_components_Description_Description__WEBPACK_IMPORTED_MODULE_3__.Description, {
       style: {
         width: '70%',
         marginTop: 16
       },
-      children: "Invited members have private accounts. They can register and join to the organization using this link."
+      children: ["Invite people to join your Label Studio instance. People that you invite have full access to all of your projects. ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("a", {
+        href: "https://labelstud.io/guide/signup.html",
+        children: "Learn more"
+      }), "."]
     })]
   });
 };
@@ -9583,8 +9586,8 @@ ProjectsPage.routes = ({
     });
   },
   pages: {
-    DataManagerPage: _DataManager_DataManager__WEBPACK_IMPORTED_MODULE_8__.DataManagerPage,
-    SettingsPage: _Settings__WEBPACK_IMPORTED_MODULE_9__.SettingsPage
+    DataManagerPage: _DataManager_DataManager__WEBPACK_IMPORTED_MODULE_8__.DataManagerPage //SettingsPage,
+
   }
 }];
 
@@ -9882,9 +9885,11 @@ const DangerZone = () => {
     label: `Delete ${project.total_predictions_number} Predictions`
   }, {
     type: 'tabs',
+    disabled: true,
     label: `Drop All Tabs`
   }, {
     type: 'project',
+    disabled: true,
     label: 'Delete Project'
   }], [project]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
