@@ -19,12 +19,16 @@ config: '
       <Label value="PRECEDENT" background="#fad6d6" hotkey="t"/>
       <Label value="LC_CASE" background="#fbb1cf" hotkey="l"/>
       <Label value="Appellant_Name" background="#f570ea" hotkey="shift+a"/>
-      <Label value="Respondent_Name" background="violet" hotkey="shift+r"/>
+      <Label value="Respondent_Name" background="#cdee81" hotkey="shift+r"/>
+      <Label value="Accused_Name" background="#79fb82" hotkey="shift+s"/>
+      <Label value="Victim_Name" background="#f77373" hotkey="shift+v"/>
+      <Label value="Convicted_Name" background="#55f6ce" hotkey="shift+c"/>
+      <Label value="Acquitted_Name" background="#8381ee" hotkey="shift+q"/>
       <Label value="Judge_Name" background="#fdd8a5" hotkey="shift+j"/>
       <Label value="Lawyer_Name" background="#f9d380" hotkey="shift+l"/>
       <Label value="Witness_Name" background="violet" hotkey="shift+w"/>
       <Label value="Investigating_Officer" background="#f0df70" hotkey="shift+i"/>
-      <Label value="Other_Name" background="violet" hotkey="shift+o"/>
+      <Label value="Other_Name" background="#8193ee" hotkey="shift+o"/>
     </Labels>
   </View>
   <View style=" padding: .5em; margin: 1em 0; background: #f1f1f1; position: sticky; top: 0; border-radius: 3px; overflow-y: scroll;">
