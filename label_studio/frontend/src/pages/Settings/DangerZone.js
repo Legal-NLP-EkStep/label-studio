@@ -61,11 +61,9 @@ export const DangerZone = () => {
     label: `Delete ${project.total_predictions_number} Predictions`,
   }, {
     type: 'tabs',
-    disabled: true,
     label: `Drop All Tabs`,
   }, {
     type: 'project',
-    disabled: true,
     label: 'Delete Project',
   }], [project]);
 

@@ -125,8 +125,8 @@ DataManagerPage.context = ({dmRef}) => {
   const [mode, setMode] = useState(dmRef?.mode ?? "explorer");
 
   const links = {
-    //'/settings': 'Settings',
-    //'/data/import': "Import",
+    '/settings': 'Settings',
+    '/data/import': "Import",
     '/data/export': 'Export',
   };
 
