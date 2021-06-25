@@ -159,7 +159,8 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
         from tqdm import tqdm
         inclusion_list = ['COURT', 'AUTHORITY', 'POLICE_STATION', 'COMPANY', 'OTHER_ORG', 'STATUTE', 'PROVISION',
                           'PRECEDENT', 'LC_CASE', 'Appellant_Name', 'Respondent_Name', 'Judge_Name', 'Lawyer_Name',
-                          'Witness_Name', 'Investigating_Officer', 'Other_Name']
+                          'Witness_Name', 'Investigating_Officer', 'Other_Name', 'Accused_Name', 'Victim_Name',
+                          'Convicted_Name', 'Acquitted_Name']
 
         def struct(start, end, label, text):
             uid = uuid.uuid4()
@@ -173,7 +174,7 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
             if key:
                 check = []
                 list2 = []
-                for i in added:
+                for i in list1:
                     key = i['value']['text'] + '@' + i['value']['labels'][0]
                     key = key.strip()
                     if key not in check:
@@ -184,6 +185,18 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
                 for i in list1:
                     if i not in list2:
                         list2.append(i)
+            return list2
+
+        def de_duplicate_on_span_and_type(list1):
+            check = []
+            list2 = []
+            for i in list1:
+                key = '@'.join(
+                    [str(i['value']['start']), str(i['value']['end']), i['value']['text'], i['value']['labels'][0]])
+                key = key.strip()
+                if key not in check:
+                    check.append(key)
+                    list2.append(i)
             return list2
 
         def fetch_diff(list1, list2):
@@ -226,7 +239,7 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
                     end = found.span()[1]
                     if start != original_start and end != original_end:
                         new_draft.append(struct(start, end, label, annotated_text))
-        request.data['result'] = de_duplicate(new_draft)
+        request.data['result'] = de_duplicate_on_span_and_type(de_duplicate(new_draft))
         return request
 
     def update(self, request, *args, **kwargs):
