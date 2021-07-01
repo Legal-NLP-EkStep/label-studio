@@ -160,7 +160,7 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
         inclusion_list = ['COURT', 'AUTHORITY', 'POLICE_STATION', 'COMPANY', 'OTHER_ORG', 'STATUTE', 'PROVISION',
                           'PRECEDENT', 'LC_CASE', 'Appellant_Name', 'Respondent_Name', 'Judge_Name', 'Lawyer_Name',
                           'Witness_Name', 'Investigating_Officer', 'Other_Name', 'Accused_Name', 'Victim_Name',
-                          'Convicted_Name', 'Acquitted_Name']
+                          'Convicted_Name', 'Acquitted_Name','Liable_Name','Not_Liable_Name','Petitioner_Name']
 
         def struct(start, end, label, text):
             uid = uuid.uuid4()
