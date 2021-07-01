@@ -263,7 +263,7 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
             label = annotation['value']['labels'][0]  # ToDo Add inclusion list
             original_start = annotation['value']['start']
             original_end = annotation['value']['end']
-            pattern = re.compile(r'\b' + re.escape(annotated_text) + '(?=\W)',re.IGNORECASE)
+            pattern = re.compile(r'\b' + '\s+'.join([re.escape(i) for i in annotated_text.split()]) + '(?=\W)',re.IGNORECASE)
             if label in inclusion_list:
                 for found in pattern.finditer(text):
                     start = found.span()[0]
