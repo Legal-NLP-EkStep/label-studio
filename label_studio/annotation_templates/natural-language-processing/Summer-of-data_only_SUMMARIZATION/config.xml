@@ -1,0 +1,16 @@
+<View style="display: flex; justify-content: space-around; max-height: 900px; overflow-y: scroll;">
+  <View style="overflow-y: scroll; width: 70%; min-width: 200px;">
+
+    <Header value="Predicted Summary"/>
+    <Labels name="label1" toName="summary">
+      <Label value="HALLUCINATION" background="red"/>
+    </Labels>
+  </View>
+  <View style=" padding: .5em; margin: 1em 0; background: #f1f1f1; position: sticky; top: 0; border-radius: 3px; overflow-y: scroll;">
+    <Header value="Judgement Text"/>
+    <Text name="text" value="$text"/>
+    <Header value="Predicted Summary"/>
+    <Text name="summary" value="$predicted_summary"/>
+  </View>
+</View>
+

@@ -79,36 +79,36 @@ actions = [
                     '<a href="https://labelstud.io/guide/ml.html>See more in the documentation</a>.'
                     'Please confirm your action.',
             'type': 'confirm'
-        }
-    },
-    {
-        'entry_point': delete_tasks,
-        'title': 'Delete tasks', 'order': 100,
-        'permissions': 'can_delete_tasks',
-        'reload': True,
-        'dialog': {
-            'text': 'You are going to delete the selected tasks. Please confirm your action.',
-            'type': 'confirm'
-        }
-    },
-    {
-        'entry_point': delete_tasks_annotations,
-        'title': 'Delete annotations',
-        'order': 101,
-        'permissions': 'can_manage_annotations',
-        'dialog': {
-            'text': 'You are going to delete all annotations from the selected tasks. Please confirm your action.',
-            'type': 'confirm'
-        }
-    },
-    {
-        'entry_point': delete_tasks_predictions,
-        'title': 'Delete predictions',
-        'order': 102,
-        'permissions': 'can_manage_annotations',
-        'dialog': {
-            'text': 'You are going to delete all predictions from the selected tasks. Please confirm your action.',
-            'type': 'confirm'
-        }
-    }
-]
+        }}]
+    # },
+    # {
+    #     'entry_point': delete_tasks,
+    #     'title': 'Delete tasks', 'order': 100,
+    #     'permissions': 'can_delete_tasks',
+    #     'reload': True,
+    #     'dialog': {
+    #         'text': 'You are going to delete the selected tasks. Please confirm your action.',
+    #         'type': 'confirm'
+    #     }
+    # },
+    # {
+    #     'entry_point': delete_tasks_annotations,
+    #     'title': 'Delete annotations',
+    #     'order': 101,
+    #     'permissions': 'can_manage_annotations',
+    #     'dialog': {
+    #         'text': 'You are going to delete all annotations from the selected tasks. Please confirm your action.',
+    #         'type': 'confirm'
+    #     }
+    # },
+    # {
+    #     'entry_point': delete_tasks_predictions,
+    #     'title': 'Delete predictions',
+    #     'order': 102,
+    #     'permissions': 'can_manage_annotations',
+    #     'dialog': {
+    #         'text': 'You are going to delete all predictions from the selected tasks. Please confirm your action.',
+    #         'type': 'confirm'
+    #     }
+    # }
+
