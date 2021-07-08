@@ -69,15 +69,11 @@ def delete_tasks_predictions(project, queryset, **kwargs):
 actions = [
     {
         'entry_point': retrieve_tasks_predictions,
-        'title': 'Retrieve predictions',
+        'title': 'Calculate Score',
         'order': 90,
         'permissions': 'can_manage_annotations',
         'dialog': {
-            'text': 'Send the selected tasks to all ML backends connected to the project.'
-                    'This operation migth be abruptly interrupted due to a timeout. ' 
-                    'The recommended way to get predictions is to update tasks using the Label Studio API.'
-                    '<a href="https://labelstud.io/guide/ml.html>See more in the documentation</a>.'
-                    'Please confirm your action.',
+            'text': 'Do you want to calculate the score?',
             'type': 'confirm'
         }}]
     # },
