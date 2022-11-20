@@ -152,131 +152,131 @@ class AnnotationAPI(RequestDebugLogMixin, generics.RetrieveUpdateDestroyAPIView)
         annotation.delete()
 
     @staticmethod
-    def find_and_annotate_duplicates(request, Annotation, annotation_id):
-        import re
-        import uuid
-        import copy
-        from tqdm import tqdm
-        inclusion_list = ['COURT', 'AUTHORITY', 'POLICE_STATION', 'COMPANY', 'OTHER_ORG', 'STATUTE', 'PROVISION',
-                          'PRECEDENT', 'LC_CASE', 'Appellant_Name', 'Respondent_Name', 'Judge_Name', 'Lawyer_Name',
-                          'Witness_Name', 'Investigating_Officer', 'Other_Name', 'Accused_Name', 'Victim_Name',
-                          'Convicted_Name', 'Acquitted_Name','Liable_Name','Not_Liable_Name','Petitioner_Name']
-
-        def struct(start, end, label, text):
-            uid = uuid.uuid4()
-            id = uid.hex
-            data = {"value": {"start": start, "end": end, "text": text, "labels": [label]}, "id": id,
-                    "from_name": "label",
-                    "to_name": "text", "type": "labels"}
-            return data
-
-        def de_duplicate_on_enity_label(old_annotations):
-            complete_annotations = {}
-            final_annotations = []
-            for old_annotation in old_annotations:
-                if old_annotation['value']['labels'][0] not in complete_annotations.keys():
-                    complete_annotations[old_annotation['value']['labels'][0]] = []
-
-                complete_annotations[old_annotation['value']['labels'][0]].append(old_annotation)
-
-            for ann in complete_annotations.keys():
-                annotations = complete_annotations[ann]
-                annotations_sorted = sorted(annotations, key=lambda i: (i['value']['start'], -i['value']['end']))
-                to_compare = annotations_sorted[0]
-                annotations_sorted = annotations_sorted[1:]
-
-                final_annotations.append(to_compare)
-                i = 0
-                while i < len(annotations_sorted):
-                    if annotations_sorted[i]['value']['end'] > to_compare['value']['end']:
-                        to_compare = annotations_sorted[i]
-                        final_annotations.append(to_compare)
-
-                    i += 1
-            return final_annotations
-
-        def de_duplicate(list1, key=False):
-            dummy_val = 0
-            if key:
-                check = {}
-                list2 = []
-                for i in list1:
-                    key = i['value']['text'] + '@' + i['value']['labels'][0]
-                    key = key.strip()
-                    try:
-                        val = check[key]
-                    except:
-                        check[key] = dummy_val
-                        list2.append(i)
-            else:
-                list2 = []
-                for i in list1:
-                    if i not in list2:
-                        list2.append(i)
-            return list2
-
-        def de_duplicate_on_span_and_type(list1):
-            dummy_val = 0
-            check = {}
-            list2 = []
-            for i in list1:
-                key = '@'.join(
-                    [str(i['value']['start']), str(i['value']['end']), i['value']['text'], i['value']['labels'][0]])
-                key = key.strip()
-                try:
-                    val = check[key]
-                except:
-                    check[key] = dummy_val
-                    list2.append(i)
-            return list2
-
-        def fetch_diff(list1, list2):
-            list3 = []
-            for i in list1:
-                if not i in list2:
-                    list3.append(i)
-            return list3
-
-        obj = get_object_with_check_and_log(request, Annotation, pk=annotation_id)
-        last_update = copy.deepcopy(obj.result)
-        text = copy.deepcopy(obj.task.data['text'])
-        draft = copy.deepcopy(request.data['result'])
-        deleted = []  # fetch_diff(last_update, draft)
-        added = fetch_diff(draft, last_update)
-        new_draft = []
-        for deleted_annotation in deleted:
-            for i in draft:
-                if not '@'.join(
-                        [deleted_annotation['value']['text'],
-                         deleted_annotation['value']['labels'][0]]).strip() == '@'.join(
-                        [i['value']['text'], i['value']['labels'][0]]).strip():
-                    new_draft.append(i)
-        if not new_draft and not deleted:
-            new_draft = draft
-        new_added = de_duplicate(added, key=True)
-        change = fetch_diff(added, new_added)
-        for i in change:
-            new_draft.remove(i)
-        added = new_added
-        for annotation in tqdm(added):
-            annotated_text = annotation['value']['text']
-            label = annotation['value']['labels'][0]  # ToDo Add inclusion list
-            original_start = annotation['value']['start']
-            original_end = annotation['value']['end']
-            pattern = re.compile(r'\b' + '\s+'.join([re.escape(i) for i in annotated_text.split()]) + '(?=\W)',re.IGNORECASE)
-            if label in inclusion_list:
-                for found in pattern.finditer(text):
-                    start = found.span()[0]
-                    end = found.span()[1]
-                    if start != original_start and end != original_end:
-                        new_draft.append(struct(start, end, label, annotated_text))
-        request.data['result'] = de_duplicate_on_enity_label(de_duplicate_on_span_and_type(de_duplicate(new_draft)))
-        return request
+    # def find_and_annotate_duplicates(request, Annotation, annotation_id):
+    #     import re
+    #     import uuid
+    #     import copy
+    #     from tqdm import tqdm
+    #     inclusion_list = ['COURT', 'AUTHORITY', 'POLICE_STATION', 'COMPANY', 'OTHER_ORG', 'STATUTE', 'PROVISION',
+    #                       'PRECEDENT', 'LC_CASE', 'Appellant_Name', 'Respondent_Name', 'Judge_Name', 'Lawyer_Name',
+    #                       'Witness_Name', 'Investigating_Officer', 'Other_Name', 'Accused_Name', 'Victim_Name',
+    #                       'Convicted_Name', 'Acquitted_Name','Liable_Name','Not_Liable_Name','Petitioner_Name']
+    #
+    #     def struct(start, end, label, text):
+    #         uid = uuid.uuid4()
+    #         id = uid.hex
+    #         data = {"value": {"start": start, "end": end, "text": text, "labels": [label]}, "id": id,
+    #                 "from_name": "label",
+    #                 "to_name": "text", "type": "labels"}
+    #         return data
+    #
+    #     def de_duplicate_on_enity_label(old_annotations):
+    #         complete_annotations = {}
+    #         final_annotations = []
+    #         for old_annotation in old_annotations:
+    #             if old_annotation['value']['labels'][0] not in complete_annotations.keys():
+    #                 complete_annotations[old_annotation['value']['labels'][0]] = []
+    #
+    #             complete_annotations[old_annotation['value']['labels'][0]].append(old_annotation)
+    #
+    #         for ann in complete_annotations.keys():
+    #             annotations = complete_annotations[ann]
+    #             annotations_sorted = sorted(annotations, key=lambda i: (i['value']['start'], -i['value']['end']))
+    #             to_compare = annotations_sorted[0]
+    #             annotations_sorted = annotations_sorted[1:]
+    #
+    #             final_annotations.append(to_compare)
+    #             i = 0
+    #             while i < len(annotations_sorted):
+    #                 if annotations_sorted[i]['value']['end'] > to_compare['value']['end']:
+    #                     to_compare = annotations_sorted[i]
+    #                     final_annotations.append(to_compare)
+    #
+    #                 i += 1
+    #         return final_annotations
+    #
+    #     def de_duplicate(list1, key=False):
+    #         dummy_val = 0
+    #         if key:
+    #             check = {}
+    #             list2 = []
+    #             for i in list1:
+    #                 key = i['value']['text'] + '@' + i['value']['labels'][0]
+    #                 key = key.strip()
+    #                 try:
+    #                     val = check[key]
+    #                 except:
+    #                     check[key] = dummy_val
+    #                     list2.append(i)
+    #         else:
+    #             list2 = []
+    #             for i in list1:
+    #                 if i not in list2:
+    #                     list2.append(i)
+    #         return list2
+    #
+    #     def de_duplicate_on_span_and_type(list1):
+    #         dummy_val = 0
+    #         check = {}
+    #         list2 = []
+    #         for i in list1:
+    #             key = '@'.join(
+    #                 [str(i['value']['start']), str(i['value']['end']), i['value']['text'], i['value']['labels'][0]])
+    #             key = key.strip()
+    #             try:
+    #                 val = check[key]
+    #             except:
+    #                 check[key] = dummy_val
+    #                 list2.append(i)
+    #         return list2
+    #
+    #     def fetch_diff(list1, list2):
+    #         list3 = []
+    #         for i in list1:
+    #             if not i in list2:
+    #                 list3.append(i)
+    #         return list3
+    #
+    #     obj = get_object_with_check_and_log(request, Annotation, pk=annotation_id)
+    #     last_update = copy.deepcopy(obj.result)
+    #     text = copy.deepcopy(obj.task.data['text'])
+    #     draft = copy.deepcopy(request.data['result'])
+    #     deleted = []  # fetch_diff(last_update, draft)
+    #     added = fetch_diff(draft, last_update)
+    #     new_draft = []
+    #     for deleted_annotation in deleted:
+    #         for i in draft:
+    #             if not '@'.join(
+    #                     [deleted_annotation['value']['text'],
+    #                      deleted_annotation['value']['labels'][0]]).strip() == '@'.join(
+    #                     [i['value']['text'], i['value']['labels'][0]]).strip():
+    #                 new_draft.append(i)
+    #     if not new_draft and not deleted:
+    #         new_draft = draft
+    #     new_added = de_duplicate(added, key=True)
+    #     change = fetch_diff(added, new_added)
+    #     for i in change:
+    #         new_draft.remove(i)
+    #     added = new_added
+    #     for annotation in tqdm(added):
+    #         annotated_text = annotation['value']['text']
+    #         label = annotation['value']['labels'][0]  # ToDo Add inclusion list
+    #         original_start = annotation['value']['start']
+    #         original_end = annotation['value']['end']
+    #         pattern = re.compile(r'\b' + '\s+'.join([re.escape(i) for i in annotated_text.split()]) + '(?=\W)',re.IGNORECASE)
+    #         if label in inclusion_list:
+    #             for found in pattern.finditer(text):
+    #                 start = found.span()[0]
+    #                 end = found.span()[1]
+    #                 if start != original_start and end != original_end:
+    #                     new_draft.append(struct(start, end, label, annotated_text))
+    #     request.data['result'] = de_duplicate_on_enity_label(de_duplicate_on_span_and_type(de_duplicate(new_draft)))
+    #     return request
 
     def update(self, request, *args, **kwargs):
         # save user history with annotator_id, time & annotation result
         annotation_id = self.kwargs['pk']
-        request = self.find_and_annotate_duplicates(request, Annotation, annotation_id)
+        # request = self.find_and_annotate_duplicates(request, Annotation, annotation_id)
         annotation = get_object_with_check_and_log(request, Annotation, pk=annotation_id)
         annotation.task.save()  # refresh task metrics
 
